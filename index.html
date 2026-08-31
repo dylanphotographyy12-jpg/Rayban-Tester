@@ -1,0 +1,212 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=600, height=600">
+    <title>Ray-Ban Minecraft Controller</title>
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 600px;
+            height: 600px;
+            background: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        #status {
+            font-size: 34px;
+            margin-bottom: 25px;
+        }
+
+        #lastInput {
+            font-size: 24px;
+            margin-bottom: 35px;
+        }
+
+        .dpad {
+            display: grid;
+            grid-template-columns: 120px 120px 120px;
+            grid-template-rows: 100px 100px 100px;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        button {
+            background: white;
+            color: black;
+            border: none;
+            border-radius: 20px;
+            font-size: 45px;
+            font-weight: bold;
+        }
+
+        button:active {
+            background: #888;
+        }
+
+        #up {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        #left {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        #center {
+            grid-column: 2;
+            grid-row: 2;
+            font-size: 30px;
+        }
+
+        #right {
+            grid-column: 3;
+            grid-row: 2;
+        }
+
+        #down {
+            grid-column: 2;
+            grid-row: 3;
+        }
+
+        #jump {
+            margin-top: 25px;
+            width: 300px;
+            height: 70px;
+            font-size: 28px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="status">CONNECTING...</div>
+
+    <div id="lastInput">
+        Waiting for connection
+    </div>
+
+    <div class="dpad">
+        <button id="up">▲</button>
+        <button id="left">◀</button>
+        <button id="center">●</button>
+        <button id="right">▶</button>
+        <button id="down">▼</button>
+    </div>
+
+    <button id="jump">JUMP</button>
+
+    <script>
+        const status = document.getElementById("status");
+        const lastInput = document.getElementById("lastInput");
+
+        // Your PC's local IP address
+        const socket = new WebSocket("ws://192.168.1.37:8765");
+
+        socket.onopen = function() {
+            status.textContent = "PC CONNECTED";
+            lastInput.textContent = "Connection successful";
+
+            console.log("Connected to PC");
+
+            // Test message
+            socket.send("CONNECTION_TEST");
+        };
+
+        socket.onclose = function() {
+            status.textContent = "PC DISCONNECTED";
+            lastInput.textContent = "Connection lost";
+        };
+
+        socket.onerror = function(error) {
+            status.textContent = "CONNECTION ERROR";
+            lastInput.textContent = "Could not reach PC";
+
+            console.log("WebSocket error:", error);
+        };
+
+        function sendCommand(command) {
+            lastInput.textContent = command;
+
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(command);
+            }
+        }
+
+        document.getElementById("up").onclick = function() {
+            sendCommand("UP");
+        };
+
+        document.getElementById("down").onclick = function() {
+            sendCommand("DOWN");
+        };
+
+        document.getElementById("left").onclick = function() {
+            sendCommand("LEFT");
+        };
+
+        document.getElementById("right").onclick = function() {
+            sendCommand("RIGHT");
+        };
+
+        document.getElementById("center").onclick = function() {
+            sendCommand("CENTER");
+        };
+
+        document.getElementById("jump").onclick = function() {
+            sendCommand("JUMP");
+        };
+
+        // Keyboard / D-pad input
+        document.addEventListener("keydown", function(event) {
+
+            if (event.key === "ArrowUp") {
+                sendCommand("UP");
+            }
+
+            if (event.key === "ArrowDown") {
+                sendCommand("DOWN");
+            }
+
+            if (event.key === "ArrowLeft") {
+                sendCommand("LEFT");
+            }
+
+            if (event.key === "ArrowRight") {
+                sendCommand("RIGHT");
+            }
+
+            if (event.key === "Enter") {
+                sendCommand("JUMP");
+            }
+
+            if (event.key === "Escape") {
+                sendCommand("ESC");
+            }
+        });
+    </script>
+
+</body>
+</html>
+```
+
+);
+
+</script>
+
+</body>
+</html>
