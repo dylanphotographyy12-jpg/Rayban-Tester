@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=600,height=600">
-<title>Ray-Ban Voxel World</title>
+<title>Ray-Ban Minecraft</title>
 
 <style>
 html,body{
@@ -12,10 +12,9 @@ html,body{
     padding:0;
     width:600px;
     height:600px;
-    background:#000;
     overflow:hidden;
+    background:#000;
     font-family:Arial,sans-serif;
-    color:white;
 }
 
 #game{
@@ -23,53 +22,87 @@ html,body{
     width:600px;
     height:600px;
     overflow:hidden;
-    background:#87CEEB;
+    background:#75c7ff;
 }
+
+/* SKY */
 
 #sky{
     position:absolute;
     inset:0;
-    background:linear-gradient(#65b7ff 0%,#a9ddff 65%,#dff4ff 100%);
+    background:linear-gradient(
+        #55b7ff 0%,
+        #8bd4ff 65%,
+        #d9f1ff 100%
+    );
 }
+
+/* SUN */
+
+#sun{
+    position:absolute;
+    width:75px;
+    height:75px;
+    background:#fff;
+    border-radius:50%;
+    top:50px;
+    right:75px;
+    box-shadow:0 0 30px #fff;
+}
+
+/* GAME WORLD */
 
 #world{
     position:absolute;
     left:0;
-    right:0;
-    bottom:105px;
-    height:300px;
+    top:130px;
+    width:600px;
+    height:350px;
+    perspective:700px;
     overflow:hidden;
-    perspective:500px;
 }
 
-.ground{
+/* GROUND */
+
+#ground{
     position:absolute;
-    left:-100px;
-    bottom:-30px;
-    width:800px;
-    height:230px;
+    left:-300px;
+    top:170px;
+    width:1200px;
+    height:500px;
+
     background:
-        linear-gradient(135deg,#63a844 25%,#4d9638 25%,#4d9638 50%,#63a844 50%,#63a844 75%,#4d9638 75%);
-    background-size:42px 42px;
-    transform:rotateX(55deg);
-    transform-origin:bottom;
+        repeating-linear-gradient(
+            45deg,
+            #4c9638 0px,
+            #4c9638 25px,
+            #438531 25px,
+            #438531 50px
+        );
+
+    transform:
+        rotateX(62deg)
+        rotateZ(0deg);
+
+    transform-origin:center top;
 }
+
+/* BLOCKS */
 
 .block{
     position:absolute;
-    width:55px;
-    height:55px;
+    width:45px;
+    height:45px;
     box-sizing:border-box;
     border:2px solid rgba(0,0,0,.25);
-    image-rendering:pixelated;
 }
 
 .grass{
-    background:#55a936;
+    background:#55a83b;
 }
 
 .dirt{
-    background:#8b5a2b;
+    background:#87572c;
 }
 
 .stone{
@@ -77,79 +110,117 @@ html,body{
 }
 
 .wood{
-    background:#8b6a3d;
+    background:#76502d;
 }
 
-.leaf{
-    background:#2f7d32;
+.leaves{
+    background:#2e8134;
 }
+
+/* CROSSHAIR */
 
 #crosshair{
     position:absolute;
     left:50%;
-    top:46%;
+    top:47%;
     transform:translate(-50%,-50%);
-    font-size:34px;
+    color:white;
+    font-size:32px;
     font-weight:bold;
+    text-shadow:
+        2px 2px 2px black,
+        -2px -2px 2px black;
     z-index:20;
-    text-shadow:0 0 4px #000;
 }
 
-#status{
+/* HUD */
+
+#hud{
     position:absolute;
-    top:12px;
     left:15px;
+    top:15px;
     z-index:30;
-    font-size:18px;
-    text-shadow:0 2px 3px #000;
+    color:white;
+    font-size:19px;
+    text-shadow:2px 2px 3px black;
 }
+
+#health{
+    margin-top:4px;
+}
+
+#hunger{
+    margin-top:3px;
+}
+
+/* COORDINATES */
+
+#coords{
+    position:absolute;
+    right:15px;
+    top:15px;
+    color:white;
+    font-size:15px;
+    text-shadow:2px 2px 3px black;
+    z-index:30;
+}
+
+/* HOTBAR */
 
 #hotbar{
     position:absolute;
-    bottom:18px;
+    bottom:12px;
     left:50%;
     transform:translateX(-50%);
     display:flex;
-    gap:5px;
-    z-index:30;
+    gap:4px;
+    z-index:40;
 }
 
 .slot{
-    width:45px;
-    height:45px;
-    border:2px solid white;
-    background:rgba(0,0,0,.45);
+    width:42px;
+    height:42px;
+    border:3px solid #555;
+    background:#222;
     display:flex;
-    align-items:center;
     justify-content:center;
-    font-size:22px;
+    align-items:center;
+    font-size:21px;
+    box-sizing:border-box;
 }
 
-.selected{
-    border:4px solid yellow;
+.slot.selected{
+    border:3px solid white;
 }
+
+/* CONTROLS */
 
 #controls{
     position:absolute;
     left:12px;
-    bottom:70px;
+    bottom:65px;
     z-index:40;
+
     display:grid;
-    grid-template-columns:55px 55px 55px;
-    grid-template-rows:45px 45px 45px;
-    gap:4px;
+
+    grid-template-columns:
+        48px 48px 48px;
+
+    grid-template-rows:
+        42px 42px 42px;
+
+    gap:3px;
 }
 
 .control{
-    background:rgba(0,0,0,.65);
-    border:2px solid white;
+    background:rgba(0,0,0,.55);
+    border:2px solid rgba(255,255,255,.8);
+    border-radius:7px;
     color:white;
-    border-radius:8px;
-    font-size:24px;
     display:flex;
-    align-items:center;
     justify-content:center;
-    user-select:none;
+    align-items:center;
+    font-size:23px;
 }
 
 #up{
@@ -171,34 +242,40 @@ html,body{
     grid-row:2;
 }
 
+/* ACTIONS */
+
 #actions{
     position:absolute;
     right:12px;
-    bottom:70px;
+    bottom:65px;
     z-index:40;
+
     display:flex;
     flex-direction:column;
-    gap:6px;
+    gap:4px;
 }
 
 .action{
-    width:105px;
-    height:42px;
-    background:rgba(0,0,0,.65);
+    width:90px;
+    height:38px;
     border:2px solid white;
+    border-radius:7px;
+    background:rgba(0,0,0,.55);
     color:white;
-    border-radius:8px;
-    font-size:16px;
+    font-size:13px;
 }
+
+/* MESSAGE */
 
 #message{
     position:absolute;
-    top:45px;
     left:50%;
+    top:60px;
     transform:translateX(-50%);
-    z-index:30;
-    font-size:16px;
-    text-shadow:0 2px 3px #000;
+    color:white;
+    font-size:18px;
+    text-shadow:2px 2px 3px black;
+    z-index:40;
 }
 </style>
 </head>
@@ -209,233 +286,411 @@ html,body{
 
     <div id="sky"></div>
 
+    <div id="sun"></div>
+
     <div id="world">
-        <div class="ground"></div>
 
-        <!-- Trees -->
-        <div class="block wood" style="left:90px;bottom:155px;"></div>
-        <div class="block wood" style="left:90px;bottom:210px;"></div>
-        <div class="block leaf" style="left:35px;bottom:265px;"></div>
-        <div class="block leaf" style="left:90px;bottom:265px;"></div>
-        <div class="block leaf" style="left:145px;bottom:265px;"></div>
-        <div class="block leaf" style="left:90px;bottom:320px;"></div>
+        <div id="ground"></div>
 
-        <!-- Hills -->
-        <div class="block grass" style="left:240px;bottom:120px;"></div>
-        <div class="block grass" style="left:295px;bottom:120px;"></div>
-        <div class="block grass" style="left:350px;bottom:120px;"></div>
+        <!-- distant terrain -->
 
-        <div class="block dirt" style="left:240px;bottom:65px;"></div>
-        <div class="block dirt" style="left:295px;bottom:65px;"></div>
-        <div class="block dirt" style="left:350px;bottom:65px;"></div>
+        <div class="block grass" style="left:80px;top:180px"></div>
+        <div class="block dirt" style="left:80px;top:225px"></div>
 
-        <div class="block grass" style="left:400px;bottom:175px;"></div>
-        <div class="block grass" style="left:455px;bottom:175px;"></div>
-        <div class="block dirt" style="left:400px;bottom:120px;"></div>
-        <div class="block dirt" style="left:455px;bottom:120px;"></div>
+        <div class="block grass" style="left:125px;top:180px"></div>
+        <div class="block dirt" style="left:125px;top:225px"></div>
+
+        <div class="block grass" style="left:170px;top:180px"></div>
+        <div class="block dirt" style="left:170px;top:225px"></div>
+
+        <!-- mountain -->
+
+        <div class="block stone" style="left:310px;top:145px"></div>
+        <div class="block stone" style="left:355px;top:145px"></div>
+
+        <div class="block stone" style="left:265px;top:190px"></div>
+        <div class="block stone" style="left:310px;top:190px"></div>
+        <div class="block stone" style="left:355px;top:190px"></div>
+        <div class="block stone" style="left:400px;top:190px"></div>
+
+        <div class="block dirt" style="left:265px;top:235px"></div>
+        <div class="block dirt" style="left:310px;top:235px"></div>
+        <div class="block dirt" style="left:355px;top:235px"></div>
+        <div class="block dirt" style="left:400px;top:235px"></div>
+
+        <!-- TREE -->
+
+        <div class="block wood" style="left:500px;top:175px"></div>
+        <div class="block wood" style="left:500px;top:130px"></div>
+
+        <div class="block leaves" style="left:455px;top:85px"></div>
+        <div class="block leaves" style="left:500px;top:85px"></div>
+        <div class="block leaves" style="left:545px;top:85px"></div>
+
+        <div class="block leaves" style="left:500px;top:40px"></div>
+
     </div>
 
     <div id="crosshair">+</div>
 
-    <div id="status">
-        VOXEL WORLD
+    <div id="hud">
+
+        <div>❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️</div>
+
+        <div id="hunger">
+            🍗🍗🍗🍗🍗🍗🍗🍗🍗🍗
+        </div>
+
+    </div>
+
+    <div id="coords">
+        X: 0<br>
+        Y: 64<br>
+        Z: 0
     </div>
 
     <div id="message">
-        READY
+        Minecraft
     </div>
 
     <div id="controls">
+
         <div class="control" id="up">▲</div>
+
         <div class="control" id="left">◀</div>
+
         <div class="control" id="down">▼</div>
+
         <div class="control" id="right">▶</div>
+
     </div>
 
     <div id="actions">
-        <button class="action" id="jump">JUMP</button>
-        <button class="action" id="break">BREAK</button>
-        <button class="action" id="place">PLACE</button>
+
+        <button class="action" id="jump">
+            JUMP
+        </button>
+
+        <button class="action" id="break">
+            ⛏ BREAK
+        </button>
+
+        <button class="action" id="place">
+            PLACE
+        </button>
+
     </div>
 
     <div id="hotbar">
+
         <div class="slot selected">🟩</div>
         <div class="slot">🟫</div>
         <div class="slot">🪨</div>
         <div class="slot">🪵</div>
         <div class="slot">🍃</div>
+        <div class="slot">💎</div>
+
     </div>
 
 </div>
 
 <script>
 
-let direction = 0;
-let playerX = 0;
-let playerY = 0;
+/* =========================
+   PLAYER
+========================= */
+
+let x = 0;
+let y = 64;
+let z = 0;
+
+let rotation = 0;
+
+let health = 20;
+let hunger = 20;
+
 let selectedBlock = 0;
 
-const message = document.getElementById("message");
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const message =
+    document.getElementById("message");
+
+const coords =
+    document.getElementById("coords");
+
+const crosshair =
+    document.getElementById("crosshair");
+
+
+/* =========================
+   MESSAGE
+========================= */
 
 function showMessage(text){
+
     message.textContent = text;
 
     clearTimeout(window.messageTimer);
 
-    window.messageTimer = setTimeout(()=>{
-        message.textContent = "READY";
-    },800);
+    window.messageTimer =
+        setTimeout(function(){
+
+            message.textContent =
+                "Minecraft";
+
+        },700);
 }
 
-/* -------------------------
+
+/* =========================
+   UPDATE HUD
+========================= */
+
+function updateCoords(){
+
+    coords.innerHTML =
+        "X: " + Math.round(x) +
+        "<br>Y: " + Math.round(y) +
+        "<br>Z: " + Math.round(z);
+
+}
+
+
+/* =========================
    MOVEMENT
-------------------------- */
+========================= */
 
-function moveForward(){
-    playerY += 1;
-    showMessage("FORWARD");
+function forward(){
+
+    const radians =
+        rotation * Math.PI / 180;
+
+    x += Math.sin(radians);
+    z += Math.cos(radians);
+
+    updateCoords();
+
+    showMessage("WALK");
+
 }
 
-function moveBackward(){
-    playerY -= 1;
+function backward(){
+
+    const radians =
+        rotation * Math.PI / 180;
+
+    x -= Math.sin(radians);
+    z -= Math.cos(radians);
+
+    updateCoords();
+
     showMessage("BACK");
+
 }
+
+
+/* =========================
+   TURNING
+========================= */
 
 function turnLeft(){
-    direction -= 15;
 
-    if(direction < 0){
-        direction += 360;
-    }
+    rotation -= 15;
+
+    if(rotation < 0)
+        rotation += 360;
 
     showMessage("TURN LEFT");
+
 }
 
 function turnRight(){
-    direction += 15;
 
-    if(direction >= 360){
-        direction -= 360;
-    }
+    rotation += 15;
+
+    if(rotation >= 360)
+        rotation -= 360;
 
     showMessage("TURN RIGHT");
+
 }
+
+
+/* =========================
+   JUMP
+========================= */
 
 function jump(){
-    showMessage("JUMP!");
 
-    const crosshair = document.getElementById("crosshair");
+    showMessage("JUMP");
 
-    crosshair.style.top = "42%";
+    y += 1;
 
-    setTimeout(()=>{
-        crosshair.style.top = "46%";
-    },180);
+    updateCoords();
+
+    crosshair.style.top =
+        "43%";
+
+    setTimeout(function(){
+
+        y -= 1;
+
+        updateCoords();
+
+        crosshair.style.top =
+            "47%";
+
+    },250);
+
 }
+
+
+/* =========================
+   BREAK BLOCK
+========================= */
 
 function breakBlock(){
-    showMessage("BREAK");
+
+    showMessage("BLOCK BROKEN");
+
+    hunger--;
+
+    if(hunger < 0)
+        hunger = 0;
+
 }
+
+
+/* =========================
+   PLACE BLOCK
+========================= */
 
 function placeBlock(){
-    showMessage("PLACE");
+
+    showMessage("BLOCK PLACED");
+
 }
 
-/* -------------------------
-   BUTTONS
-------------------------- */
 
-document.getElementById("up").onclick = moveForward;
-document.getElementById("down").onclick = moveBackward;
-document.getElementById("left").onclick = turnLeft;
-document.getElementById("right").onclick = turnRight;
+/* =========================
+   CONTROLS
+========================= */
 
-document.getElementById("jump").onclick = jump;
-document.getElementById("break").onclick = breakBlock;
-document.getElementById("place").onclick = placeBlock;
+document
+.getElementById("up")
+.onclick = forward;
+
+document
+.getElementById("down")
+.onclick = backward;
+
+document
+.getElementById("left")
+.onclick = turnLeft;
+
+document
+.getElementById("right")
+.onclick = turnRight;
+
+document
+.getElementById("jump")
+.onclick = jump;
+
+document
+.getElementById("break")
+.onclick = breakBlock;
+
+document
+.getElementById("place")
+.onclick = placeBlock;
 
 
-/* -------------------------
+/* =========================
    KEYBOARD
-------------------------- */
+========================= */
 
-document.addEventListener("keydown",function(event){
+document.addEventListener(
+    "keydown",
+    function(event){
 
-    if(event.key === "ArrowUp"){
-        moveForward();
+        if(event.key === "ArrowUp")
+            forward();
+
+        if(event.key === "ArrowDown")
+            backward();
+
+        if(event.key === "ArrowLeft")
+            turnLeft();
+
+        if(event.key === "ArrowRight")
+            turnRight();
+
+        if(
+            event.key === "Enter" ||
+            event.key === " "
+        )
+            jump();
+
+        if(event.key === "e")
+            breakBlock();
+
+        if(event.key === "q")
+            placeBlock();
+
     }
-
-    if(event.key === "ArrowDown"){
-        moveBackward();
-    }
-
-    if(event.key === "ArrowLeft"){
-        turnLeft();
-    }
-
-    if(event.key === "ArrowRight"){
-        turnRight();
-    }
-
-    if(event.key === "Enter" || event.key === " "){
-        jump();
-    }
-
-    if(event.key === "e"){
-        breakBlock();
-    }
-
-    if(event.key === "q"){
-        placeBlock();
-    }
-
-});
+);
 
 
-/* -------------------------
+/* =========================
    HOTBAR
-------------------------- */
+========================= */
 
-document.querySelectorAll(".slot").forEach((slot,index)=>{
+document
+.querySelectorAll(".slot")
+.forEach(function(slot,index){
 
-    slot.onclick = function(){
+    slot.onclick =
+        function(){
 
-        document.querySelectorAll(".slot").forEach(s=>{
-            s.classList.remove("selected");
-        });
+            document
+            .querySelectorAll(".slot")
+            .forEach(function(s){
 
-        slot.classList.add("selected");
+                s.classList.remove(
+                    "selected"
+                );
 
-        selectedBlock = index;
+            });
 
-        showMessage("BLOCK " + (index + 1));
-    };
+            slot.classList.add(
+                "selected"
+            );
 
-});
+            selectedBlock =
+                index;
 
+            showMessage(
+                "SLOT " + (index + 1)
+            );
 
-/* -------------------------
-   PREVENT SCROLLING
-------------------------- */
-
-document.addEventListener("keydown",function(event){
-
-    if([
-        "ArrowUp",
-        "ArrowDown",
-        "ArrowLeft",
-        "ArrowRight",
-        " "
-    ].includes(event.key)){
-
-        event.preventDefault();
-
-    }
+        };
 
 });
+
+
+/* =========================
+   INITIALIZE
+========================= */
+
+updateCoords();
 
 </script>
 
 </body>
 </html>
 ```
+
