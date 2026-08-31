@@ -2,211 +2,440 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=600, height=600">
-    <title>Ray-Ban Minecraft Controller</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=600,height=600">
+<title>Ray-Ban Voxel World</title>
 
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 600px;
-            height: 600px;
-            background: black;
-            color: white;
-            font-family: Arial, sans-serif;
-            overflow: hidden;
-        }
+<style>
+html,body{
+    margin:0;
+    padding:0;
+    width:600px;
+    height:600px;
+    background:#000;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    color:white;
+}
 
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
+#game{
+    position:relative;
+    width:600px;
+    height:600px;
+    overflow:hidden;
+    background:#87CEEB;
+}
 
-        #status {
-            font-size: 34px;
-            margin-bottom: 25px;
-        }
+#sky{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(#65b7ff 0%,#a9ddff 65%,#dff4ff 100%);
+}
 
-        #lastInput {
-            font-size: 24px;
-            margin-bottom: 35px;
-        }
+#world{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:105px;
+    height:300px;
+    overflow:hidden;
+    perspective:500px;
+}
 
-        .dpad {
-            display: grid;
-            grid-template-columns: 120px 120px 120px;
-            grid-template-rows: 100px 100px 100px;
-            gap: 8px;
-            justify-content: center;
-        }
+.ground{
+    position:absolute;
+    left:-100px;
+    bottom:-30px;
+    width:800px;
+    height:230px;
+    background:
+        linear-gradient(135deg,#63a844 25%,#4d9638 25%,#4d9638 50%,#63a844 50%,#63a844 75%,#4d9638 75%);
+    background-size:42px 42px;
+    transform:rotateX(55deg);
+    transform-origin:bottom;
+}
 
-        button {
-            background: white;
-            color: black;
-            border: none;
-            border-radius: 20px;
-            font-size: 45px;
-            font-weight: bold;
-        }
+.block{
+    position:absolute;
+    width:55px;
+    height:55px;
+    box-sizing:border-box;
+    border:2px solid rgba(0,0,0,.25);
+    image-rendering:pixelated;
+}
 
-        button:active {
-            background: #888;
-        }
+.grass{
+    background:#55a936;
+}
 
-        #up {
-            grid-column: 2;
-            grid-row: 1;
-        }
+.dirt{
+    background:#8b5a2b;
+}
 
-        #left {
-            grid-column: 1;
-            grid-row: 2;
-        }
+.stone{
+    background:#777;
+}
 
-        #center {
-            grid-column: 2;
-            grid-row: 2;
-            font-size: 30px;
-        }
+.wood{
+    background:#8b6a3d;
+}
 
-        #right {
-            grid-column: 3;
-            grid-row: 2;
-        }
+.leaf{
+    background:#2f7d32;
+}
 
-        #down {
-            grid-column: 2;
-            grid-row: 3;
-        }
+#crosshair{
+    position:absolute;
+    left:50%;
+    top:46%;
+    transform:translate(-50%,-50%);
+    font-size:34px;
+    font-weight:bold;
+    z-index:20;
+    text-shadow:0 0 4px #000;
+}
 
-        #jump {
-            margin-top: 25px;
-            width: 300px;
-            height: 70px;
-            font-size: 28px;
-        }
-    </style>
+#status{
+    position:absolute;
+    top:12px;
+    left:15px;
+    z-index:30;
+    font-size:18px;
+    text-shadow:0 2px 3px #000;
+}
+
+#hotbar{
+    position:absolute;
+    bottom:18px;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    gap:5px;
+    z-index:30;
+}
+
+.slot{
+    width:45px;
+    height:45px;
+    border:2px solid white;
+    background:rgba(0,0,0,.45);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+}
+
+.selected{
+    border:4px solid yellow;
+}
+
+#controls{
+    position:absolute;
+    left:12px;
+    bottom:70px;
+    z-index:40;
+    display:grid;
+    grid-template-columns:55px 55px 55px;
+    grid-template-rows:45px 45px 45px;
+    gap:4px;
+}
+
+.control{
+    background:rgba(0,0,0,.65);
+    border:2px solid white;
+    color:white;
+    border-radius:8px;
+    font-size:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    user-select:none;
+}
+
+#up{
+    grid-column:2;
+}
+
+#left{
+    grid-column:1;
+    grid-row:2;
+}
+
+#down{
+    grid-column:2;
+    grid-row:3;
+}
+
+#right{
+    grid-column:3;
+    grid-row:2;
+}
+
+#actions{
+    position:absolute;
+    right:12px;
+    bottom:70px;
+    z-index:40;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.action{
+    width:105px;
+    height:42px;
+    background:rgba(0,0,0,.65);
+    border:2px solid white;
+    color:white;
+    border-radius:8px;
+    font-size:16px;
+}
+
+#message{
+    position:absolute;
+    top:45px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:30;
+    font-size:16px;
+    text-shadow:0 2px 3px #000;
+}
+</style>
 </head>
 
 <body>
 
-    <div id="status">CONNECTING...</div>
+<div id="game">
 
-    <div id="lastInput">
-        Waiting for connection
+    <div id="sky"></div>
+
+    <div id="world">
+        <div class="ground"></div>
+
+        <!-- Trees -->
+        <div class="block wood" style="left:90px;bottom:155px;"></div>
+        <div class="block wood" style="left:90px;bottom:210px;"></div>
+        <div class="block leaf" style="left:35px;bottom:265px;"></div>
+        <div class="block leaf" style="left:90px;bottom:265px;"></div>
+        <div class="block leaf" style="left:145px;bottom:265px;"></div>
+        <div class="block leaf" style="left:90px;bottom:320px;"></div>
+
+        <!-- Hills -->
+        <div class="block grass" style="left:240px;bottom:120px;"></div>
+        <div class="block grass" style="left:295px;bottom:120px;"></div>
+        <div class="block grass" style="left:350px;bottom:120px;"></div>
+
+        <div class="block dirt" style="left:240px;bottom:65px;"></div>
+        <div class="block dirt" style="left:295px;bottom:65px;"></div>
+        <div class="block dirt" style="left:350px;bottom:65px;"></div>
+
+        <div class="block grass" style="left:400px;bottom:175px;"></div>
+        <div class="block grass" style="left:455px;bottom:175px;"></div>
+        <div class="block dirt" style="left:400px;bottom:120px;"></div>
+        <div class="block dirt" style="left:455px;bottom:120px;"></div>
     </div>
 
-    <div class="dpad">
-        <button id="up">▲</button>
-        <button id="left">◀</button>
-        <button id="center">●</button>
-        <button id="right">▶</button>
-        <button id="down">▼</button>
+    <div id="crosshair">+</div>
+
+    <div id="status">
+        VOXEL WORLD
     </div>
 
-    <button id="jump">JUMP</button>
+    <div id="message">
+        READY
+    </div>
 
-    <script>
-        const status = document.getElementById("status");
-        const lastInput = document.getElementById("lastInput");
+    <div id="controls">
+        <div class="control" id="up">▲</div>
+        <div class="control" id="left">◀</div>
+        <div class="control" id="down">▼</div>
+        <div class="control" id="right">▶</div>
+    </div>
 
-        // Your PC's local IP address
-        const socket = new WebSocket("ws://192.168.1.37:8765");
+    <div id="actions">
+        <button class="action" id="jump">JUMP</button>
+        <button class="action" id="break">BREAK</button>
+        <button class="action" id="place">PLACE</button>
+    </div>
 
-        socket.onopen = function() {
-            status.textContent = "PC CONNECTED";
-            lastInput.textContent = "Connection successful";
+    <div id="hotbar">
+        <div class="slot selected">🟩</div>
+        <div class="slot">🟫</div>
+        <div class="slot">🪨</div>
+        <div class="slot">🪵</div>
+        <div class="slot">🍃</div>
+    </div>
 
-            console.log("Connected to PC");
+</div>
 
-            // Test message
-            socket.send("CONNECTION_TEST");
-        };
+<script>
 
-        socket.onclose = function() {
-            status.textContent = "PC DISCONNECTED";
-            lastInput.textContent = "Connection lost";
-        };
+let direction = 0;
+let playerX = 0;
+let playerY = 0;
+let selectedBlock = 0;
 
-        socket.onerror = function(error) {
-            status.textContent = "CONNECTION ERROR";
-            lastInput.textContent = "Could not reach PC";
+const message = document.getElementById("message");
 
-            console.log("WebSocket error:", error);
-        };
+function showMessage(text){
+    message.textContent = text;
 
-        function sendCommand(command) {
-            lastInput.textContent = command;
+    clearTimeout(window.messageTimer);
 
-            if (socket.readyState === WebSocket.OPEN) {
-                socket.send(command);
-            }
-        }
+    window.messageTimer = setTimeout(()=>{
+        message.textContent = "READY";
+    },800);
+}
 
-        document.getElementById("up").onclick = function() {
-            sendCommand("UP");
-        };
+/* -------------------------
+   MOVEMENT
+------------------------- */
 
-        document.getElementById("down").onclick = function() {
-            sendCommand("DOWN");
-        };
+function moveForward(){
+    playerY += 1;
+    showMessage("FORWARD");
+}
 
-        document.getElementById("left").onclick = function() {
-            sendCommand("LEFT");
-        };
+function moveBackward(){
+    playerY -= 1;
+    showMessage("BACK");
+}
 
-        document.getElementById("right").onclick = function() {
-            sendCommand("RIGHT");
-        };
+function turnLeft(){
+    direction -= 15;
 
-        document.getElementById("center").onclick = function() {
-            sendCommand("CENTER");
-        };
+    if(direction < 0){
+        direction += 360;
+    }
 
-        document.getElementById("jump").onclick = function() {
-            sendCommand("JUMP");
-        };
+    showMessage("TURN LEFT");
+}
 
-        // Keyboard / D-pad input
-        document.addEventListener("keydown", function(event) {
+function turnRight(){
+    direction += 15;
 
-            if (event.key === "ArrowUp") {
-                sendCommand("UP");
-            }
+    if(direction >= 360){
+        direction -= 360;
+    }
 
-            if (event.key === "ArrowDown") {
-                sendCommand("DOWN");
-            }
+    showMessage("TURN RIGHT");
+}
 
-            if (event.key === "ArrowLeft") {
-                sendCommand("LEFT");
-            }
+function jump(){
+    showMessage("JUMP!");
 
-            if (event.key === "ArrowRight") {
-                sendCommand("RIGHT");
-            }
+    const crosshair = document.getElementById("crosshair");
 
-            if (event.key === "Enter") {
-                sendCommand("JUMP");
-            }
+    crosshair.style.top = "42%";
 
-            if (event.key === "Escape") {
-                sendCommand("ESC");
-            }
+    setTimeout(()=>{
+        crosshair.style.top = "46%";
+    },180);
+}
+
+function breakBlock(){
+    showMessage("BREAK");
+}
+
+function placeBlock(){
+    showMessage("PLACE");
+}
+
+/* -------------------------
+   BUTTONS
+------------------------- */
+
+document.getElementById("up").onclick = moveForward;
+document.getElementById("down").onclick = moveBackward;
+document.getElementById("left").onclick = turnLeft;
+document.getElementById("right").onclick = turnRight;
+
+document.getElementById("jump").onclick = jump;
+document.getElementById("break").onclick = breakBlock;
+document.getElementById("place").onclick = placeBlock;
+
+
+/* -------------------------
+   KEYBOARD
+------------------------- */
+
+document.addEventListener("keydown",function(event){
+
+    if(event.key === "ArrowUp"){
+        moveForward();
+    }
+
+    if(event.key === "ArrowDown"){
+        moveBackward();
+    }
+
+    if(event.key === "ArrowLeft"){
+        turnLeft();
+    }
+
+    if(event.key === "ArrowRight"){
+        turnRight();
+    }
+
+    if(event.key === "Enter" || event.key === " "){
+        jump();
+    }
+
+    if(event.key === "e"){
+        breakBlock();
+    }
+
+    if(event.key === "q"){
+        placeBlock();
+    }
+
+});
+
+
+/* -------------------------
+   HOTBAR
+------------------------- */
+
+document.querySelectorAll(".slot").forEach((slot,index)=>{
+
+    slot.onclick = function(){
+
+        document.querySelectorAll(".slot").forEach(s=>{
+            s.classList.remove("selected");
         });
-    </script>
 
-</body>
-</html>
-```
+        slot.classList.add("selected");
 
-);
+        selectedBlock = index;
+
+        showMessage("BLOCK " + (index + 1));
+    };
+
+});
+
+
+/* -------------------------
+   PREVENT SCROLLING
+------------------------- */
+
+document.addEventListener("keydown",function(event){
+
+    if([
+        "ArrowUp",
+        "ArrowDown",
+        "ArrowLeft",
+        "ArrowRight",
+        " "
+    ].includes(event.key)){
+
+        event.preventDefault();
+
+    }
+
+});
 
 </script>
 
 </body>
 </html>
+```
