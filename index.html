@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=600, height=600, initial-scale=1.0">
+
+<title>Minecraft Controller</title>
+
+<style>
+
+html, body {
+    width: 600px;
+    height: 600px;
+    margin: 0;
+    padding: 0;
+
+    overflow: hidden;
+
+    background: black;
+    color: white;
+
+    font-family: Arial, sans-serif;
+}
+
+#app {
+    width: 600px;
+    height: 600px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+}
+
+#title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+#arrow {
+    font-size: 90px;
+    line-height: 1;
+    margin-bottom: 15px;
+}
+
+#direction {
+    font-size: 40px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+#status {
+    font-size: 22px;
+}
+
+#hint {
+    font-size: 16px;
+    opacity: 0.6;
+    margin-top: 25px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+    <div id="title">
+        MINECRAFT CONTROLLER
+    </div>
+
+    <div id="arrow">
+        ●
+    </div>
+
+    <div id="direction">
+        STOPPED
+    </div>
+
+    <div id="status">
+        READY
+    </div>
+
+    <div id="hint">
+        Opposite direction = STOP
+    </div>
+
+</div>
+
+
+<script>
+
+let movement = "stopped";
+
+const socket = new WebSocket(
+    "wss://convenient-plumbing-classification-meant.trycloudflare.com"
+);
+
+socket.onopen = function() {
+    console.log("CONNECTED TO PC");
+};
+
+socket.onclose = function() {
+    console.log("DISCONNECTED FROM PC");
+};
+
+socket.onerror = function(error) {
+    console.log("WEBSOCKET ERROR", error);
+};
+
+const arrow =
+    document.getElementById("arrow");
+
+const direction =
+    document.getElementById("direction");
+
+const status =
+    document.getElementById("status");
+
+
+function updateDisplay() {
+
+    if (movement === "forward") {
+
+        arrow.textContent = "▲";
+        direction.textContent = "FORWARD";
+        status.textContent = "MOVING";
+
+    }
+
+    else if (movement === "backward") {
+
+        arrow.textContent = "▼";
+        direction.textContent = "BACKWARD";
+        status.textContent = "MOVING";
+
+    }
+
+    else if (movement === "left") {
+
+        arrow.textContent = "◀";
+        direction.textContent = "LEFT";
+        status.textContent = "MOVING";
+
+    }
+
+    else if (movement === "right") {
+
+        arrow.textContent = "▶";
+        direction.textContent = "RIGHT";
+        status.textContent = "MOVING";
+
+    }
+
+    else {
+
+        arrow.textContent = "●";
+        direction.textContent = "STOPPED";
+        status.textContent = "READY";
+
+    }
+}
+
+
+/*
+==================================================
+FORWARD / BACKWARD
+==================================================
+*/
+
+function forward() {
+
+    if (movement === "forward") {
+
+        // Already moving forward.
+        // Do nothing.
+
+        return;
+    }
+
+    if (movement === "backward") {
+
+        // Opposite direction stops movement.
+
+        movement = "stopped";
+
+    }
+
+    else {
+
+        // Start moving forward.
+
+        movement = "forward";
+    }
+
+    updateDisplay();
+}
+
+
+function backward() {
+
+    if (movement === "backward") {
+
+        // Already moving backward.
+        // Do nothing.
+
+        return;
+    }
+
+    if (movement === "forward") {
+
+        // Opposite direction stops movement.
+
+        movement = "stopped";
+
+    }
+
+    else {
+
+        // Start moving backward.
+
+        movement = "backward";
+    }
+
+    updateDisplay();
+}
+
+
+/*
+==================================================
+LEFT / RIGHT
+==================================================
+*/
+
+function left() {
+
+    if (movement === "left") {
+
+        // Already moving left.
+        // Do nothing.
+
+        return;
+    }
+
+    if (movement === "right") {
+
+        // Opposite direction stops movement.
+
+        movement = "stopped";
+
+    }
+
+    else {
+
+        // Start moving left.
+
+        movement = "left";
+    }
+
+    updateDisplay();
+}
+
+
+function right() {
+
+    if (movement === "right") {
+
+        // Already moving right.
+        // Do nothing.
+
+        return;
+    }
+
+    if (movement === "left") {
+
+        // Opposite direction stops movement.
+
+        movement = "stopped";
+
+    }
+
+    else {
+
+        // Start moving right.
+
+        movement = "right";
+    }
+
+    updateDisplay();
+}
+
+
+/*
+==================================================
+GLASSES CONTROLS
+==================================================
+*/
+
+document.addEventListener("keydown", function(event) {
+
+    event.preventDefault();
+
+    switch (event.key) {
+
+        case "ArrowUp":
+            forward();
+            break;
+
+        case "ArrowDown":
+            backward();
+            break;
+
+        case "ArrowLeft":
+            left();
+            break;
+
+        case "ArrowRight":
+            right();
+            break;
+
+        case "Enter":
+
+            status.textContent = "ACTION / JUMP";
+
+            /*
+            Later this will send an actual
+            Minecraft action to your computer.
+            */
+
+            break;
+    }
+
+});
+
+</script>
+
+</body>
+</html>
